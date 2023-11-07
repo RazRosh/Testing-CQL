@@ -16,9 +16,33 @@ jobs:
         run: |
           # Download CodeQL CLI from the specified GitHub release URL
           wget https://github.com/github/codeql/archive/refs/tags/codeql-cli/v2.15.1.zip -O codeql.zip
-          unzip codeql.zip
-          sudo mv codeql-codeql-cli-2.15.1/codeql /usr/local/bin/
-          rm -rf codeql.zip codeql-codeql-cli-2.15.1
+          unzip codeql.zip -d codeql-extraction
+          extraction_root="codeql-extraction/codeql-codeql-cli-2.15.1"
+
+          # Move to the extraction root directory
+          cd "$extraction_root"
+
+          # Ensure proper extraction for macOS "Catalina" (or newer)
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            mv ~/Downloads/codeql*.zip .
+            /usr/bin/xattr -c codeql*.zip
+            unzip codeql*.zip
+          fi
+
+          # Back to the original working directory
+          cd ..
+
+          # Add the CodeQL CLI directory to the PATH
+          echo "export PATH=\$PATH:$extraction_root/codeql" >> "$GITHUB_ENV"
+
+      - name: Test CodeQL CLI Configuration
+        run: |
+          # Verify CodeQL CLI configuration
+          codeql resolve qlpacks if "$extraction_root/codeql" is on the PATH.
+          "$extraction_root/codeql/codeql" resolve qlpacks otherwise
+
+          # Check available languages
+          codeql resolve languages
 
       - name: List CodeQL Queries
         id: list-queries
