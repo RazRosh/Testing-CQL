@@ -1,9 +1,7 @@
 name: CodeQL Analysis
 
 on:
-  repository_dispatch:
-    types:
-      - codeql-analysis-trigger
+  workflow_dispatch:
 
 jobs:
   codeql-analysis:
