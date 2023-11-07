@@ -14,11 +14,11 @@ jobs:
 
       - name: Install CodeQL CLI
         run: |
-          # Download CodeQL CLI from the specified GitHub release
-          wget -O codeql.tar.gz https://github.com/github/codeql/releases/download/codeql-cli/v2.15.1/codeql-linux64.tar.gz
-          tar xzf codeql.tar.gz
-          sudo mv codeql /usr/local/bin/
-          rm codeql.tar.gz
+          # Download CodeQL CLI from the specified GitHub release URL
+          wget https://github.com/github/codeql/archive/refs/tags/codeql-cli/v2.15.1.zip -O codeql.zip
+          unzip codeql.zip
+          sudo mv codeql-codeql-cli-2.15.1/codeql /usr/local/bin/
+          rm -rf codeql.zip codeql-codeql-cli-2.15.1
 
       - name: List CodeQL Queries
         id: list-queries
