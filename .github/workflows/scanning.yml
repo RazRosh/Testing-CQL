@@ -17,7 +17,7 @@ jobs:
           # Download CodeQL CLI from the specified GitHub release URL
           wget https://github.com/github/codeql/archive/refs/tags/codeql-cli/v2.15.1.zip -O codeql.zip
           unzip codeql.zip -d codeql-extraction
-          extraction_root="codeql-extraction/codeql-codeql-cli-2.15.1"
+          extraction_root="codeql-extraction/codeql-2.15.1"
 
           # Move to the extraction root directory
           cd "$extraction_root"
@@ -33,16 +33,16 @@ jobs:
           cd ..
 
           # Add the CodeQL CLI directory to the PATH
-          echo "export PATH=\$PATH:$extraction_root/codeql" >> "$GITHUB_ENV"
+          echo "export PATH=\$PATH:$extraction_root/bin" >> "$GITHUB_ENV"
 
       - name: Test CodeQL CLI Configuration
         run: |
           # Verify CodeQL CLI configuration
-          codeql resolve qlpacks if "$extraction_root/codeql" is on the PATH.
-          "$extraction_root/codeql/codeql" resolve qlpacks otherwise
+          codeql resolve qlpacks if "$extraction_root/bin" is on the PATH.
+          "$extraction_root/bin/codeql" resolve qlpacks otherwise
 
           # Check available languages
-          codeql resolve languages
+          "$extraction_root/bin/codeql" resolve languages
 
       - name: List CodeQL Queries
         id: list-queries
@@ -65,8 +65,8 @@ jobs:
             git clone "$url" target-code
 
             # Run CodeQL analysis on the cloned repository
-            codeql database create target-code-db --language=javascript --command="npm install && npm run build" --source-root=target-code
-            codeql database analyze target-code-db "$query_file" --format=sarif-latest --output=codeql-results/"$query_name-results.sarif"
+            "$extraction_root/bin/codeql" database create target-code-db --language=javascript --command="npm install && npm run build" --source-root=target-code
+            "$extraction_root/bin/codeql" database analyze target-code-db "$query_file" --format=sarif-latest --output=codeql-results/"$query_name-results.sarif"
 
             # Clean up the cloned repository
             rm -rf target-code
