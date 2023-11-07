@@ -1,0 +1,54 @@
+name: CodeQL Analysis
+
+on:
+  repository_dispatch:
+    types:
+      - codeql-analysis-trigger
+
+jobs:
+  codeql-analysis:
+    name: Run CodeQL Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set Up CodeQL Environment
+        uses: github/codeql-action/setup@v1
+        with:
+          languages: javascript # Specify the language for analysis
+
+      - name: List CodeQL Queries
+        id: list-queries
+        run: |
+          # List all .ql files in the 'queries' directory
+          find CodeQL/queries -type f -name "*.ql" > queries-list.txt
+
+      - name: Run CodeQL Analysis
+        id: codeql-analysis
+        run: |
+          # Create a directory for CodeQL results
+          mkdir -p codeql-results
+
+          # Loop through each query file listed in 'queries-list.txt'
+          while IFS= read -r query_file; do
+            # Extract the query file name without the 'CodeQL/queries/' prefix
+            query_name=$(basename "$query_file")
+
+            # Clone the repository
+            git clone "$url" target-code
+
+            # Run CodeQL analysis on the cloned repository
+            codeql database create target-code-db --language=javascript --command="npm install && npm run build" --source-root=target-code
+            codeql database analyze target-code-db "$query_file" --format=sarif-latest --output=codeql-results/"$query_name-results.sarif"
+
+            # Clean up the cloned repository
+            rm -rf target-code
+          done < queries-list.txt
+
+      - name: Upload CodeQL Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: codeql-results
+          path: codeql-results
