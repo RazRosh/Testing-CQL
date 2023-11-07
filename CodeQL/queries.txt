@@ -1,4 +1,0 @@
-CodeQL/queries/Cross-Site-Scripting-XSS
-CodeQL/queries/SQL-Injection
-CodeQL/queries/Sensitive-Data-Exposure
-CodeQL/queries/Insecure-Deserialization
