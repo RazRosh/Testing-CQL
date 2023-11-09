@@ -20,6 +20,8 @@ jobs:
       - name: Test CodeQL CLI Configuration
         run: |
           ls -al
+          cd ..
+          ls -al
           
       - name: List CodeQL Queries
         id: list-queries
