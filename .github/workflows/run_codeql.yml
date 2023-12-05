@@ -1,0 +1,28 @@
+name: Download and Unzip CodeQL
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Download CodeQL
+      run: |
+        curl -L -o codeql-linux64.zip https://github.com/github/codeql-cli-binaries/releases/download/v2.15.3/codeql-linux64.zip
+      shell: bash
+
+    - name: Unzip CodeQL
+      run: |
+        unzip codeql-linux64.zip -d codeql
+      shell: bash
+
+    - name: Set up CodeQL
+      run: |
+        export PATH=$PATH:$(pwd)/codeql
+      shell: bash
