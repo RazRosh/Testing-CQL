@@ -1,3 +1,0 @@
-https://github.com/kubernetes/kubernetes
-https://github.com/django/django
-https://github.com/expressjs/express
