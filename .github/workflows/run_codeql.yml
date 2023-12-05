@@ -27,7 +27,6 @@ jobs:
 
     - name: Check Directory
       run: |
-        ls -al
-        cd codeql
+        cd codeql/codeql
         ls -al
       shell: bash
