@@ -29,11 +29,14 @@ jobs:
       run: |
         # Iterate through each language folder in the "queries" directory
         for lang_folder in queries/*; do
-          # Get the language name (e.g., python, java) from the folder name
-          lang_name=$(basename "$lang_folder")
+          # Check if the folder is empty or contains only ".ql" files
+          if [ "$(ls -A "$lang_folder" | grep -v '\.ql$')" ]; then
+            # Get the language name (e.g., python, java) from the folder name
+            lang_name=$(basename "$lang_folder")
 
-          # Copy queries from the "queries" folder to the corresponding folder in "codeql/codeql"
-          cp -r "$lang_folder"/* "codeql/codeql/$lang_name/"
+            # Copy non-empty folders excluding ".ql" files
+            find "$lang_folder" -type f ! -name '.ql' -exec cp {} "codeql/codeql/$lang_name/" \;
+          fi
         done
       shell: bash
       
