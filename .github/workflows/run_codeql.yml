@@ -24,3 +24,8 @@ jobs:
       run: |
         export PATH=$PATH:$(pwd)/codeql
       shell: bash
+
+    - name: Check Directory
+      run: |
+        ls -al
+      shell: bash
