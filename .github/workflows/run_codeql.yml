@@ -1,8 +1,6 @@
 name: Download and Unzip CodeQL
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
