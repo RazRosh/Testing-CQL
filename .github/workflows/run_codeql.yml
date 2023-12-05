@@ -25,8 +25,20 @@ jobs:
         export PATH=$PATH:$(pwd)/codeql
       shell: bash
 
+    - name: Copy CodeQL Queries
+      run: |
+        # Iterate through each language folder in the "queries" directory
+        for lang_folder in queries/*; do
+          # Get the language name (e.g., python, java) from the folder name
+          lang_name=$(basename "$lang_folder")
+
+          # Copy queries from the "queries" folder to the corresponding folder in "codeql/codeql"
+          cp -r "$lang_folder"/* "codeql/codeql/$lang_name/"
+        done
+      shell: bash
+      
     - name: Check Directory
       run: |
-        cd codeql/codeql
+        cd codeql/codeql/javascript
         ls -al
       shell: bash
