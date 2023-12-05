@@ -25,23 +25,17 @@ jobs:
         export PATH=$PATH:$(pwd)/codeql
       shell: bash
 
-    - name: Copy CodeQL Queries
+    - name: Clone Django repository
       run: |
-        # Iterate through each language folder in the "queries" directory
-        for lang_folder in queries/*; do
-          # Check if the folder is empty or contains only ".ql" files
-          if [ "$(ls -A "$lang_folder" | grep -v '\.ql$')" ]; then
-            # Get the language name (e.g., python, java) from the folder name
-            lang_name=$(basename "$lang_folder")
-
-            # Copy non-empty folders excluding ".ql" files
-            find "$lang_folder" -type f ! -name '.ql' -exec cp {} "codeql/codeql/$lang_name/" \;
-          fi
-        done
+        git clone https://github.com/django/django
       shell: bash
-      
-    - name: Check Directory
+
+    - name: Analyze Django with CodeQL
       run: |
-        cd codeql/codeql/javascript
-        ls -al
+        codeql database create django-database --language=python django
+      shell: bash
+
+    - name: Run CodeQL Query
+      run: |
+        codeql query run .\queries\python\codeql-custom-queries-python\test_query.ql --database=django-database
       shell: bash
